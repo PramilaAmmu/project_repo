@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Admin Panel</title>
+    <style>
+        body{
+            background-color:#777;
+        }
+    </style>
+
+    <!-- datatable CSS -->
+    <link type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    {% include 'dashboard_header_template.html' %}
+    
+   <div class="container"> 
+      <div class="card card-body text-center" style="height: 550px;">
+
+                {% if messages  %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" alert-dismissible fade show role="alert">
+                    <strong>
+                        {{ message}}
+                    </strong>   
+                    
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                {% endfor %}
+              {% endif %}
+
+             <div>
+              <button type="submit" class="btn btn-primary" id="create_new_user_btn" 
+                data-target="#create_new_user_btn" style="float: right">
+                   Create New User</button>
+                       
+            </div> 
+
+            {% if user_details %}
+              <h3> <u>User Details </u></h3>
+              <div class="table-responsive" data-toggle="lists"
+                      data-lists-values='["id","name","email","role"]'>
+                      <table class="table display" id="userstable" style="width:100%;font-size: 12px">
+                          <thead>
+                              <tr class="thead-dark">
+                                  <th>User Id</th>
+                                  <th>User Name</th>
+                                  <th>Email-Id</th>
+                                  <th>Role</th>
+
+                              </tr>
+                          </thead>
+                           <tbody class="list">
+                              {% for users in user_details %}
+                                  <tr>
+                                      <td class="id"> {{users.user_id}} </td>
+                                      <td class="name">  {{users.name}}</td>
+                                      <td class="email">{{users.email_id}}</td>
+
+                                      {% if users.role_type == 1 %}
+                                        <td class="role"> <strong> Admin </strong></td>
+
+                                      {% elif users.role_type == 2 %}
+                                        <td class="role"> <strong>  Uploder </strong></td>
+                                      
+                                      {% elif users.role_type == 3 %}
+                                      <td class="role"> <strong>  ViewOnly </strong></td>
+                                        
+                                      {% endif %}
+                                  </tr>
+                                 
+                              {%endfor%}
+
+                            </tbody>
+
+                         
+                      </table>
+                     
+              </div>
+              {% endif %}
+
+    </div>
+  </div> 
+
+
+
+
+
+  <!-- Modal -->
+    <div class="modal fade" id="create_user_modal" tabindex="-1" role="dialog" aria-labelledby="createUserLable" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createUserLable">Create New User</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+              <form  action="{% url 'create_user' %}" method="POST">
+                {%csrf_token%}
+
+                  <div class="row">
+                    <div class="col-4 mb-3">
+                      <label for="name" class="form-label">Name:
+                      <span class="required" style="color: red;">*</span></label>
+                      
+                    </div>
+
+                    <div class="col-6 mb-3">
+                      <input type="text" class="form-control" id="name" 
+                      placeholder="Enter Name" name="name" required>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-4 mb-3">
+                      <label for="email_id" class="form-label">Email ID:
+                      <span class="required" style="color: red;">*</span></label>
+                      
+                    </div>
+                    <div class="col-6 mb-3">
+                      <input type="email" class="form-control" id="email_id" 
+                      placeholder="Enter email-id" name="email_id" required>
+                    </div>
+                  </div>
+
+          
+                  <div class="row">
+                    <div class="col-4 mb-3">
+                      <label for="password" class="form-label">Password:
+                        <span class="required" style="color: red;">*</span></label>
+                      
+                    </div>
+                    <div class="col-6 mb-3">
+                      <input type="password" class="form-control" id="password" 
+                      placeholder="Enter password" name="password" required>
+                    </div>
+                  </div>
+
+                   <div class="row">
+                    <div class="col-4 mb-3">
+                      <label for="role_type" class="form-label">Role:
+                       <span class="required" style="color: red;">*</span></label>
+                     
+                    </div>
+
+                    <select id="role_type" name="role_type" class="form-control col-6 btn-rounded" required>
+
+                      <option value="" selected disabled> Select Role</option>
+                      <option value="1"> Admin    </option>
+                      <option value="2"> Uploader </option>
+                      <option value="3"> ViewOnly </option>
+
+                    </select>
+
+                  </div>
+                    <button type="submit" class="btn btn-primary" style="margin-left:10rem" >Submit</button>
+                   
+          
+              </form>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+     <!-- DataTable.js -->
+    <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+    <script>
+          $(document).ready(function () {
+                $("#create_new_user_btn").click(function () {
+                    $('#create_user_modal').modal('show');
+                });
+
+              $('#userstable').DataTable();  // datable display
+
+            });
+
+    </script>
+
+  </body>
+</html>

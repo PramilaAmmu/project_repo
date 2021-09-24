@@ -1,0 +1,34 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light " style="background-color:#333333;">
+        <a class="nav-item nav-link active text-white" href="/">
+           <span class="navbar-brand mb-0 h1 text-white">Mantiqh Technologies</span>
+        </a>
+        <div class="collapse navbar-collapse" style="margin-left:40% ;" id="navbarNavAltMarkup">
+          <div  class="navbar-nav ">
+           
+           {% if request.session.role_type == 1 %}
+            <a class="nav-item nav-link text-white" href="{% url 'create_user' %}"> 
+            Create User </a>
+          {% else %}
+
+          {% endif %}
+
+
+           {% if request.session.role_type == 3 %}
+
+           {% else %}
+           
+            <a class="nav-item nav-link text-white" href="{% url 'upload_image' %}"> 
+            Images </a>
+
+            <a class="nav-item nav-link text-white" href="{% url 'upload_file' %}"> 
+            Files</a>
+          {% endif %}
+
+
+            <a class="nav-item nav-link text-white" href="{% url 'logout' %}">Logout</a>
+           
+          </div>
+        </div>
+  </nav>
